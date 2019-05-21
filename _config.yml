@@ -1,1 +1,48 @@
-theme: jekyll-theme-cayman
+# Basic
+title: ChK
+subtitle: 学习强国
+welcome_message: <a href="https://github.com/ychuanjian" target="_blank">My GitHub</a>
+description: 我的个人博客
+creator: <a href="http://onev.cat">@onevcat</a>
+
+url: "http://github.com/ychuanjian"
+
+permalink: /:year/:month/:title/
+
+# Format
+highlighter: rouge
+
+# supported colors: blue, green, purple, red, orange or slate. If you need clear, leave it empty.
+cover_color: 
+
+# The blog button should not be removed.
+blog_button:
+    title: 博客
+    description: Visit blog
+
+# Navigation buttons in the front page.
+nav:
+    - {title: 主页, description: My Home, url: '/index.html'}
+    # - {title: Another Button, description: A button, url: 'http://example.com'}
+
+# Pagination
+plugins: [jekyll-paginate]
+paginate: 10
+paginate_path: "page/:num/"
+
+# Comment
+comment:
+    disqus: ychuanjian
+    # duoshuo: 
+    
+# Social
+social:
+    # weibo: ychuanjian
+    github: ychuanjian
+    # twitter: onevcat
+    mail: ch_kang@icloud.com
+
+# Google Analytics
+ga:
+    id: UA-140497452-1
+    host: ychuanjian.github.io
