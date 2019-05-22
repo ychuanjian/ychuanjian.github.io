@@ -1,7 +1,7 @@
 ---
 layout: post
-title: Chapter2. Multi-armed Bandits
-date: 2019-05-17 16:53:30
+title: CHAPTER 2. Multi-armed Bandits
+date: 2019-05-21 16:53:30 +0800
 tags: 强化学习
 mathjax: true
 ---
@@ -73,14 +73,14 @@ $Q_t(a)$ 表示选择一次  action  $a$ 所获得的平均 reward 。特别地�
 
 10-armed testbed ：2000次随机生成的 10-armed bandit problem ，每一次都以标准高斯分布选取10个 $q_\ast (a)$，如下图：
 
-![10qValue](/assets/images/RL-Intro-Chapter2/10q*a.png)
+![10qValue](/assets/images/RL-Introduction/Chapter2/10q*a.png)
 
 对于每一个 $At = a(a = 1, 2,\dots,10)$ 其 reward 都从高斯分布中选取( mean  = $q_\ast (a)$，  variance  = 1)
 对于方法的评估：对每一个  10-armed bandit problem  ，在经过 1000 time steps  后，称为一轮  run ，经过独立的2000轮次后(不同 10-armed bandit problem )，得到的结果作为该方法的性能评估
 
 结果如下：
 
-![diff-epsilon](/assets/images//RL-Intro-Chapter2/diff-epsilon.png)
+![diff-epsilon](/assets/images/RL-Introduction/Chapter2/diff-epsilon.png)
 
 **结论**：
 * 这张图的初始Q值是直接设置为 0 的，如果用$Q_1(a)$ 作初值的话， optimal action 都会很快达到$80\%$ 左右
@@ -211,7 +211,7 @@ $$
 
 而 *constant $\alpha$* 中 ，新的  reward  会起到较重的作用，且 $Q$ 函数一般不收敛，所以能够跟着环境做调整
 
-![exercise2.5](/assets/images//RL-Intro-Chapter2/exercise2.5.png)
+![exercise2.5](/assets/images/RL-Introduction/Chapter2/exercise2.5.png)
 
 
 ### 2.6 Optimistic Initial Values ###
@@ -225,7 +225,7 @@ $$
 
 初始Q值也可以方便地用于鼓励 explore ，比如把上面的 10-armed bandit problems  的 $Q_1(a)$ 全部设成 $+5$ ，那么在开始的时候，算法总是会得到低于 $5$ 的 reward ，$Q$ 值被更新成较小的值，那么算法就会去尝试其它的 action ，而被选中的 action 的 $Q$ 值总是被减少，也就是说 greedy-action 会不停地变化；反复如此，便能轻松地起到鼓励 explore 的作用；而在$n$稍大一些时， $+5$ 的副作用便轻松的被消去了。
 
-![optimistic_initial_value](/assets/images//RL-Intro-Chapter2/optimistic_initial_value.png)
+![optimistic_initial_value](/assets/images/RL-Introduction/Chapter2/optimistic_initial_value.png)
 
 这种鼓励 explore  的方法称作  optimistic initial values ， 在 stationary problems  可作为提高效率的小技巧
 
@@ -256,7 +256,7 @@ $N_t(a)$ 是  action  $a$ 在 $t$ 时刻前被选过的次数，当其为 $0$ �
 
 在所有的  action  被选得多了后，那些 $Q$ 值小的、被选中次数多的  action ，会减少被选中的频率
 
-![upside-of-ucb](/assets/images//RL-Intro-Chapter2/upside-of-ucb.png)
+![upside-of-ucb](/assets/images/RL-Introduction/Chapter2/upside-of-ucb.png)
 
 如上图，其中 $\epsilon = -1$ 的即是  UCB ，前面的抖动是在每轮遍历所有  action  后发生的：第一轮选取时，那些 $N_t(a) = 0$ 的视为  greedy-action  ，因此前 $k$ 次会遍历所有  action ，到了第 $k+1$ 次时，由于所有的 $N_t(a) = 1$，因此会选中 $Q_t(a)$ 最高的那个，于是大概率选中了 optimal action ；第二轮也是类似的情况，在式中不确定值起到较大的作用，到了都遍历两轮后，便是 $Q_t(a)$ 起到较大作用，多次如此后； $N_t(a)$ 变大，不确定度变小，于是曲线趋于平稳。
 
@@ -279,7 +279,7 @@ $\pi_t(a)$ 表示了在 $t$ 时刻选择  action $a$  的概率，对于任意�
 #### Exercise ####
 *2.7*: 说明：在仅有两个  action  的情况下，使用  soft-max distribution  与使用  logistic(sigmoid) function  是一样的
 
-    **待做**
+    待做
 
 在这种 **随机梯度上升** (*stochastic gradient ascent*) 的情形中，有一个很直觉的算法，根据每一步选中的  action  $A_t$ 和所获得的  reward  $R_t$ 更新所有 $H_{t+1}(a)$ :
 
@@ -293,7 +293,7 @@ $$
 其中， $\bar R_t\in \Bbb R$ 在 $t$ (包含)时刻以前，所有  rewards  的平均值，它作为一个  baseline  与其它  rewards  作比较。如果新的  reward  高于它，就提高 $A_t$ 的被选几率；反之则降低。
 未选中的  actions  与被选中的  action  操作相反。
 
-![with_out_baseline](/assets/images//RL-Intro-Chapter2/with_out_baseline.png)
+![with_out_baseline](/assets/images/RL-Introduction/Chapter2/with_out_baseline.png)
 
 接下来验证上述算法是**梯度上升**的一种形式：
 
@@ -383,7 +383,7 @@ Associative search taks  常被叫做  contextual bandits  ，其介于简单的
 
 以上方法在  10-armed testbed  中的性能表现如下图：
 
-![diff-parameter-method-perform](/assets/images//RL-Intro-Chapter2/diff-parameter-method-perform.png)
+![diff-parameter-method-perform](/assets/images/RL-Introduction/Chapter2/diff-parameter-method-perform.png)
 
 这些方法的性能都受到参数的影响，我们在考虑方法的性能时，不仅要考虑其在最优参数处表现出的性能，还要考虑方法本身对参数的敏感性。如果方法足够敏感，调参会方便些，但如果太过敏感，也许又会使其失去泛化能力和可重复性。
 
@@ -396,3 +396,5 @@ Associative search taks  常被叫做  contextual bandits  ，其介于简单的
 #### Exercise ####
 *2.9 (programming)*: 给出一张类似图2.6的图，基于  Exercise 2.5  ，   non-stationary case  ，$\epsilon$-greedy
  method , $\alpha=0.1$ ，每轮 $200,000$ 步，对于每一种算法-参数组，使用后 $100,000$ 步的平均奖励作为数据。
+ 
+    待做

@@ -1,7 +1,7 @@
 ---
 layout: post
-title: CHAPTER 1. INTRODUCTION
-date: 2019-05-17 16:53:30
+title: CHAPTER 1. Introduction
+date: 2019-05-16 16:53:30 +0800
 tags: 强化学习
 mathjax: true
 ---
