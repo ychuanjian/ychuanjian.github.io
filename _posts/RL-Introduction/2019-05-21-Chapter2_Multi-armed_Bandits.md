@@ -85,6 +85,7 @@ $Q_t(a)$ 表示选择一次  action  $a$ 所获得的平均 reward 。特别地�
 **结论**：
 * 这张图的初始Q值是直接设置为 0 的，如果用$Q_1(a)$ 作初值的话， optimal action 都会很快达到$80\%$ 左右
 *  greedy method 在最开始时会略微地比 ε-greedy method 快一丢丢，但是很快收敛于低水平，其 average reward 约为1，其选中最优 action 的次数大约是三分之一，表示其得到了较次的策略
+
 对于 ε-greedy method
 * $ε = 0.1$ 时，其进步较快，收敛也较快，最终 optimal action 选取率收敛于 $90\%$ 左右
 * $ε = 0.01$ 时，进步稍慢，收敛也稍慢，但最终表现会好过 $ε = 0.1$ 的情况，理论上其最终 optimal action 选取率应为 $99\%$，**糟糕的是，图上并没有显示出 $ε = 0.01$ 最终的情况**
@@ -359,6 +360,8 @@ $$
 \end{align}
 $$
 
+证毕
+
 **随机梯度上升**能够保证算法具有鲁棒的收敛性
 
 **注意**：算法的更新不依赖于所选的动作  action  ，也不依赖于奖励基线  baseline  ， baseline  的取值不会影响更新的结果，不过会影响到更新收敛的速度。因为梯度的期望不受  baseline  的影响，但梯度的方差受到了影响。
@@ -366,13 +369,13 @@ $$
 ### 2.9 Associative Search (Contextual Bandits) ###
 之前讨论的是  nonassociative tasks ，也即不需要建立状态与动作之间的联系，接下来将讨论  associative task ，需要建立从状态到最优动作之间的映射关系。
 
-举个例子：一个新的老虎机问题：现在我们需要在10个老虎机问题中中进行决策，这10组老虎机的 $q_\ast (a)$ 各不相同，每次随机选择一组老虎机进行选择，如果不知道或者不使用老虎机组合的编号，那么上面的方法将起不到任何作用。只有将老虎机组合的编号用上，为每组老虎机考虑不同的  action  ，才能得到理想的奖励。这就是为老虎机组合的状态(编号)与对应的动作之间建立起映射关系。
+举个例子：一个新的老虎机问题：现在我们需要在10个老虎机问题中进行决策，这10组老虎机的 $q_\ast (a)$ 各不相同，每次随机选择一组老虎机进行选择，如果不知道或者不使用老虎机组合的编号，那么上面的方法将起不到任何作用。只有将老虎机组合的编号用上，为每组老虎机考虑不同的  action  ，才能得到理想的奖励。这就是为老虎机组合的状态(编号)与对应的动作之间建立起映射关系。
 
-Associative search taks  常被叫做  contextual bandits  ，其介于简单的  k-armed banditproblem  和完全的RL问题之间，它虽然建立了状态与动作的联系，但是动作还是只影响到立即回报，而不影响后续状态。
+Associative search taks  常被叫做  contextual bandits  ，其介于简单的  k-armed banditproblem  和完全的RL问题之间，它虽然建立了状态与动作的联系，但是动作还是只影响到立即奖励，而不影响后续状态。
 
 #### Exercise ####
-*2.8*：如果不知道是哪一个  case  ，那么无论怎么选，动作 1 和动作 2 的期望回报都是 $0.5$ 。
-而如果知道是哪一个  case  ，那么在学习到  case  与  action value  之间的映射后，就能总是选到  value  更高的  action  ，那么期望回报能够达到 $0.55$
+*2.8*：如果不知道是哪一个  case  ，那么无论怎么选，动作 1 和动作 2 的期望奖励都是 $0.5$ 。
+而如果知道是哪一个  case  ，那么在学习到  case  与  action value  之间的映射后，就能总是选到  value  更高的  action  ，那么期望奖励能够达到 $0.55$
 
 ### 2.10 Summary ###
 本章介绍了权衡  exploration  和  exploitation  的几个简单方法。
@@ -388,10 +391,10 @@ Associative search taks  常被叫做  contextual bandits  ，其介于简单的
 这些方法的性能都受到参数的影响，我们在考虑方法的性能时，不仅要考虑其在最优参数处表现出的性能，还要考虑方法本身对参数的敏感性。如果方法足够敏感，调参会方便些，但如果太过敏感，也许又会使其失去泛化能力和可重复性。
 
 * 在  k-armed bandit problems  中，平衡  exploration  和  exploitation  的最有方法是  Gittins indices  ，但它假设了可能问题的先验分布是已知的，而这无论在理论上还是在计算易处理性上都不能推广到完全的RL问题中。
-*
-* 贝叶斯方法假定了  action values  的一个已知的初始分布。一般来说，其更新的计算过程会非常复杂，除了某些特定的分布外( conjugate priors )，一个可能的办法是在每一步根据可能是最优动作的后验概率来选择  action  。该方法常被叫做  posterior sampling  或  Thompson sampling  。
-*
-* 贝叶斯方法可想见能够达到  exploration  和  exploitation  的最优平衡。能够为所有的动作计算可能得到的立即回报、导致的后验分布与动作值的关系。但是它的状态空间增长得太快，几乎不可能完成如此巨大的计算量，但是逼近它是有可能的。
+
+* 贝叶斯方法假定了  action values  的一个已知的初始分布。一般来说，其更新的计算过程会非常复杂，除了某些特定的分布外( conjugate priors )，一个可能的办法是在每一步根据可能是最优动作的后验概率来选择  action  。该方法常被叫做  posterior sampling  或  Thompson sampling.
+
+* 贝叶斯方法可想见能够达到  exploration  和  exploitation  的最优平衡。能够为所有的动作计算可能得到的立即奖励、导致的后验分布与动作值的关系。但是它的状态空间增长得太快，几乎不可能完成如此巨大的计算量，但是逼近它是有可能的。
 
 #### Exercise ####
 *2.9 (programming)*: 给出一张类似图2.6的图，基于  Exercise 2.5  ，   non-stationary case  ，$\epsilon$-greedy
