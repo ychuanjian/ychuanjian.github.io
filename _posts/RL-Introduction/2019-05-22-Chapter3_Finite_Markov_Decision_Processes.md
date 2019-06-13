@@ -20,10 +20,10 @@ RL 问题是通过交互学习达到一个目标，MDPs 是对这种问题的最
 * *environment*：agent 的交互对象，除了 agent 以外的一切
 
 agent 和 environment 的交互是持续的，agent 选择 actions ，environment 根据 action 给出新的 state  
-environment 也会给出 rewards ，rewards 是agent 需要通过不断决策来提高的一个数值
+environment 也会给出 rewards ，rewards 是 agent 需要通过不断决策来提高的一个数值
 
 agent 与 environment 在每个离散时间步 $t=0,1,2,3，\dots$ 做交互(离散使问题变得更简单)  
-在每个 $t$ ，agent 接收 environment 的状态 *state*, $S_t \in \mathcal S$ 并基于此选择一个 *action*，$A_t \in \mathcal A(s).$ 在下一步，作为 action 的结果， agent 会收到一个数值 *reward*, $R_{t+1} \in \mathcal R \subset \mathbb R$ ，并发现状态发生了改变，得到 $S_{t+1}$.   
+在每个 $t$ ，agent 接收 environment 的状态 *state*, $S_t \in \mathcal S$ 并基于此选择一个 *action*，$A_t \in \mathcal A(s).$ 在下一步，作为 action 的结果， agent 会收到一个数值 *reward*, $R_{t+1} \in \mathcal R \subset \mathbb R$ ，并发现状态发生了改变(进入 $t+1$ )，得到 $S_{t+1}$.   
 交互轨迹:  
 
 $$
@@ -33,7 +33,8 @@ $$
 ![agent-environment_interaction](/assets/images/RL-Introduction/Chapter3/agent-environment_interaction.png)
 
 在一个 *finite* MDP 中，states，actions 和 rewards 取值的集合($\mathcal S, \mathcal A, and\ \mathcal R$)中的元素个数都是有限的。  
-在本例中，随机变量 $R_t$ 和 $S_t$ 均有明确定义的离散概率分布，且仅依赖于前一个 state 和 action. 即对于这些随机变量，出现在时间 $t$ 的具体值，$s'\in \mathcal S$ 和 $r \in \mathcal R$ ，有一个概率：  
+在这种情况下，随机变量 $R_t$ 和 $S_t$ 有明确定义的离散概率分布，且仅依赖于前一个 state 和 action.  
+即对于这些随机变量，出现在时间 $t$ 的具体值，$s'\in \mathcal S$ 和 $r \in \mathcal R$ ，有一个概率：  
 
 $$
 p(s',r\ |\ s,a)\doteq \mathrm{Pr}\{S_t=s',R_t=r\ |\ S_{t-1}=s,A_{t-1}=a\}
@@ -148,9 +149,9 @@ $T$ 是一个随机变量，在不同的 episode 中是随机的。
 
 $$G_t\doteq R_{t+1}+\gamma R_{t+2}+\gamma^2R_{t+3}+\cdots =\sum_{k=0}^\infty\gamma^kR_{t+k+1},$$  
 
-$0\leq \gamma \leq 1$，是一个参数，叫做**折扣率**(discounting rate*)
+$0\leq \gamma \leq 1$，是一个参数，叫做**折扣率**(*discounting rate*)
 
-如果 $\gamma \leq 1$ ,那么 $G_t$ 就是有界的，如果 $\gamma =0$ ，那么 agent 就是短视的，它只会看到立即奖励，对后续的影响一概不管； $\gamma$ 越大， agent 考虑得越远。
+如果 $\gamma < 1$ ,那么 $G_t$ 就是有界的，如果 $\gamma =0$ ，那么 agent 就是短视的，它只会看到立即奖励，对后续的影响一概不管； $\gamma$ 越大， agent 考虑得越远。
 
 连续时间下，相邻回报的关系在 RL 理论与算法中十分重要：  
 
@@ -345,7 +346,7 @@ $$\begin{align}
 value functions 对 policies 定义部分排序  
 如果一个策略 $\pi$ 在所有的状态 states 下，其期望回报 return 均大于或等于另一个策略 $\pi'$ ，那么就称 $\pi$ 优于 $\pi'$   
 用数学语言表达就是： $\pi \geq \pi'\ if\ and\ only\ if\ \mathcal v_\pi(s)\geq\mathcal v_{\pi'}(s)\ for\ all\ s\in \mathcal S$   
-总是至少会有一个策略会优于或等于所有其它的策略，称之为**最优策略**(*optimal policy*)，将它或它们同意定义为 $\pi_\ast$ ，它们共享相同的 state-value function ，称为**最优 状态-值 函数**(*optimal state-value function*)，写作 $\mathcal v_\ast$ 同理有 $\mathcal q_\ast(s,a)$ ，它们的定义如下：
+总是至少会有一个策略会优于或等于所有其它的策略，称之为**最优策略**(*optimal policy*)，将它或它们同意定义为 $\pi_\ast$ ，它们共享相同的 state-value function ，称为**最优 状态-值 函数**(*optimal state-value function*)，写作 $\mathcal v_\ast$ ; 同理有**最优 状态-动作-值 函数** $\mathcal q_\ast(s,a)$ ，它们的定义如下：
 
 $$\begin{align}
 \mathcal v_\ast(s)&\doteq\max_\pi\mathcal v_\pi(s), \\

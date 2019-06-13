@@ -11,9 +11,9 @@ RL是通过与环境进行交互行为，并通过计算来学习的一种方法
 learner需要通过不断的尝试来发现哪个action能够产生较大的reward  
 较复杂的情况：actions不仅影响reward，还会影响**下一个situation**，并且由此影响到后续的rewards  
 RL的两个显著特征：*trial-and-error*(摸石头过河)、*delayed reward* (延后的反馈)  
-Reinforcement Learning 既能表示增强学习的问题，也能表示解决它的方法，还能表示研究这类问题及其解决办法的领域  
-需要注重区分这类表达方式，避免造成混淆，尤其要分清：增强学习问题和解决方法的区别  
-可以用动态系统-dynamic system 理论 (数学概念) 中的观点来描述增强学习   
+Reinforcement Learning 既能表示强化学习的问题，也能表示解决它的方法，还能表示研究这类问题及其解决办法的领域  
+需要注重区分这类表达方式，避免造成混淆，尤其要分清：强化学习问题和解决方法的区别  
+可以用动态系统-dynamic system 理论 (数学概念) 中的观点来描述强化学习   
 具体来说就是：the optimal control of incompletely-known Markov decision processes.	(Chapter 3)
 
 **一个学习代理必须具备三个条件：**
@@ -49,20 +49,16 @@ RL的代理并不是单纯指向机器人一类的完整结构，也可以指向
 
 **RL的四个要素**：策略 *a policy* 、奖励信号 *a reward signal* 、价值函数 *a value function* 、环境模型 *a model of the environment*  
 * policy：定义了在什么场景 state 下应当做出什么行为 action ，有时会是一个搜索的过程。一般而言，策略可能是随机的
-* reward signal：定义了RL的学习目标，决定了行为的好坏，是策略更新的基础。一般而言，reward signal 是state 和 action 的随机函数
+* reward signal：定义了RL的学习目标，决定了行为的好坏，是策略更新的基础。一般而言，reward signal 是 state 和 action 的随机函数
 * value function：RL的长期目标，在某一个 state +action 下，其产生的 reward 可能是低的，但其后续造成的影响能带来更高的 value ，这是RL所需要的  
-    actions 的最终目标总是获取更高的values，但是 reward 在做出action 后可以由环境直接得出，而values 却需要估算且未必准确，有效估算values 的方法是RL的核心问题  
-    value 的另一个理解：为了保证获得更多的 total reward ，所追求的一个长期目标  
-    这里将 total reward 认为是RL的终极目标，而某些时候选择一些低 reward 的行为带来了更高的 value， 而高的 value 能够保证获得更高的total reward  
-    比如将 reward 视作人得到的愉悦，value 视作人生命的长度，那么高 value 可以保证得到更多的愉悦，但终极目标还是 total reward  
-    即在某些极高的 reward 面前，可以放弃 value ，就像人为了某些东西放弃生命一样，因为这可以带来极高的愉悦
+    actions 的最终目标总是获取更高的 values，但是 reward 在做出 action 后可以由环境直接得出，而 values 却需要估算且未必准确，有效估算 values 的方法是RL的核心问题  
 * model of the environment：在model-based RL 中会使用一个环境模型来预测环境的变化，这个模型不是真正的环境；而不使用环境模型，直接走一步看一步的RL方法称为 model-free 方法
 
 ### RL的局限与范围
 
-RL强烈依赖于state ，state 可以理解为代理所在环境能够给出的任何信息，它告诉代理当前的环境是如何的
-(state 本身非常重要，但本书更关注于如何根据state 给出action)  
-大部分RL方法围绕着estimating value function 来构造，然而estimating value function 并不是必须的  
+RL强烈依赖于 state ，state 可以理解为代理能从所在环境能得到的任何信息，它告诉代理当前的环境是如何的
+(state 本身非常重要(特征表示方法很重要)，但本书更关注于如何根据 state 给出action)  
+大部分RL方法围绕着 estimating value function 来构造，然而 estimating value function 并不是必须的  
 如遗传算法、遗传编程、模拟退火及一些其它优化方法就不去估计价值函数。  
 它们提供了多个统计策略，每个策略在一段长时间内各自与独立的环境实体交互，那些得到最高reward 的策略及其变种进入下一轮迭代  
 这种算法称为进化方法，当策略空间足够小，或者搜索时间足够长，进化算法能够取得有效的成果。  
@@ -70,8 +66,8 @@ RL强烈依赖于state ，state 可以理解为代理所在环境能够给出的
 我们的重点是强化学习方法，这些方法在与环境相互作用时学习，而进化方法则不然  
 能够利用个体交互行为细节的方法在许多场合会比进化算法更有效。  
 进化算法忽略了许多RL问题的有用的结构：  
-* 忽略了所搜索的策略是一个从states 到 actions 的函数
-* 忽略了个体在其生命周期中传递的具体states 或 选择的具体 actions
+* 忽略了所搜索的策略是一个从 states 到 actions 的函数
+* 忽略了个体在其生命周期中传递的具体 states 或 选择的具体 actions
 
 ### Example：Tic-Tac-Toe
 
@@ -84,7 +80,7 @@ minimax：会避免失败，但也会错失获胜机会
 对每个策略，都能够在与对手下棋的过程中获得一个对获胜概率的估计，这个估计能够在之后指导选择哪些策略  
 一个典型的进化算法就像在策略空间中爬山，在努力获得提升的过程中产生并估计策略，或者说，一个遗传类算法能够用于保持和估计一系列策略  
 使用value function：  
-首先为游戏中的所有可能的state 设置一组数表，每个数表示从对应状态获取胜利的可能性的最新估计，把这些估计座位state 的 value，整个数表就是学习到的value function  
+首先为游戏中的所有可能的 state 设置一组数表，每个数表示从对应状态获取胜利的可能性的最新估计，把这些估计作为 state 的 value，整个数表就是学习到的 value function  
 value 值高表明该状态获胜的机会大，己方已经三连的状态value 为1，对方已经达成三连子的状态value 则为0，其它状态的初始value 设为0.5  
 与对手进行对战，在落子时，检查每一个可能的落点对应的 states 并查表得到对应 value  
 大多数时候遵循贪婪法则，即总是选择胜率最高的下法，这就是 exploit ；偶尔地，在不是最高胜率的下法中随机选择一种，以获取新知识。这是 explore  

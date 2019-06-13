@@ -6,25 +6,25 @@ tags: 强化学习
 mathjax: true
 ---
 
-**区分增强学习与其它机器学习方法的最重要特征**：用 评价动作选择的训练信息(用 policy 来选择动作，增强学习会评价所选择的动作的好坏) 来取代 直接给出正确动作的指导信息 (由外部直接给定正确的动作)	。为了明确搜索好的行为，增强学习需要积极地探索。单纯的评价性反馈支出采取的动作有多好，而不是说哪个动作最好或哪个最差；而单纯的指导性反馈恰恰相反，其指出应该采取的正确动作。在这种单纯的形式上，这两种反馈有明显不同，评价性反馈完全依赖于动作的选取，而指导性反馈则完全独立于动作的选取。
+**区分强化学习与其它机器学习方法的最重要特征**：用 评价动作选择的训练信息(用 policy 来选择动作，强化学习会评价所选择的动作的好坏) 来取代 直接给出正确动作的指导信息 (由外部直接给定正确的动作)	。为了明确搜索好的行为，强化学习需要积极地探索。单纯的评价性反馈指出采取的动作有多好，而不是说哪个动作最好或哪个最差；而单纯的指导性反馈恰恰相反，其指出应该采取的正确动作。在这种单纯的形式上，这两种反馈有明显不同，评价性反馈完全依赖于动作的选取，而指导性反馈则完全独立于动作的选取。
 
-这一章在一种简单的环境下(不超过一种situation)学习评价方面的RL，这种无关联环境中，评价性反馈所涉及的前置工作已经完成，避免了完整的RL问题中的许多复杂情况。学习这个例子，能够清楚地了解评价性反馈是如何区别于指导性反馈，以及如何与其相结合。
+这一章在一种简单的环境下(不超过一种situation， 选择 action 时不用考虑 state ，因为 state 是始终不变的常量)学习评价方面的RL，这种无关联环境中，评价性反馈所涉及的前置工作已经完成，避免了完整的RL问题中的许多复杂情况。学习这个例子，能够清楚地了解评价性反馈是如何区别于指导性反馈，以及如何与其相结合。
 
-这章使用的无关联、评价性反馈问题是 *k-armed bandit proble* 的一种简单版本，用它来引入一系列基本学习方法，并在后续章节中扩展他们以应用于完整的RL问题。在本章的最后，通过讨论 bandit 问题编程 associative ，即 situation 多于一种的情况下的RL问题。
+这章使用的无关联、评价性反馈问题是 *k-armed bandit proble* 的一种简单版本，用它来引入一系列基本学习方法，并在后续章节中扩展他们以应用于完整的RL问题。在本章的最后，通过讨论 bandit 问题变成 associative ，即 situation 多于一种的情况下的RL问题。
 
 ### 2.1 A k-armed Bandit Problem
 所谓  Bandit Problem ，就是指要在一个动作空间中做出选择，然后该选择将会决定获得的奖励的多少，在不停的做选择并得到奖励回馈中不断优化选择策略。
 
 此处的问题中，需要在k个不同选项中重复地做选择，每次选择后会得到一个数值奖励，其出自一个依赖于所做选择的统计概率分布，目标是在经过一段时间(如1000次选择或一段实际的时间)让总奖励的期望最大化。
 
-在该问题中，每个 action  都有一个期望或平均奖励，称为该  action  的  value 。将在 time step  $t$ 做的选择定为 $A_t$，其对应的奖励值为 $R_t$，对任一 action  $a$，定义 $q_\ast (a)$ 为 $a$ 的期望奖励:
+在该问题中，每个 action  都有一个期望或平均奖励，称为该  action  的  value (**这里的 value 与后面的 value function 有所不同，在这个问题中，action 不会影响到后续 states 的变化，因此 action 只对立即奖励有影响，而对长期累计奖励没有影响，而后面讨论到的问题没有这么简单**)。将在 time step  $t$ 做的选择定为 $A_t$，其对应的奖励值为 $R_t$，对任一 action  $a$，定义 $q_\ast (a)$ 为 $a$ 的期望奖励:
 
 $$
 q_\ast (a)\doteq \Bbb E[R_t|A_t=a].
 $$
 
-由于$q_\ast (a)$ 不完全可知，定义  estimated value of action  为 $Q_t(a)$，目标是让$Q_t(a)$ 靠近 $q_\ast (a)$
-这里的$q_\ast (a)$ 的定义是针对 Bandit Problem  的，每次的选择不会影响到后面的情况，因此只要考虑即时 reward
+由于 $q_\ast (a)$ 不完全可知，定义  estimated value of action  为 $Q_t(a)$，目标是让 $Q_t(a)$ 靠近 $q_\ast (a)$  
+这里的 $q_\ast (a)$ 的定义是针对 Bandit Problem  的，每次的选择不会影响到后面的情况，因此只要考虑即时 reward
 
 当我们保存下这些  estimates of the action values ，在某些 time step 中，我们能够找到 value  最高的 action ，它们称为  greedy action ，如果我们选择这些action，就叫做 exploiting ；反之，当我们选择那些不是 greedy actions  的 action 时，称作  exploring ，这能优化那些  non-greedy action  的  value ，这主要依赖于后续的未知变化。
 
@@ -52,14 +52,15 @@ $$
 
 分子为在 $t$ 时刻前所有选择 action  $a$ 所获得的 rewards  之和，分母为在 $t$ 时刻前选择 action  $a$ 的总次数。
 
-$Q_t(a)$ 表示选择一次  action  $a$ 所获得的平均 reward 。特别地，当分母为0时，可以定义$Q_t(a)$为0.
+$Q_t(a)$ 表示选择一次  action  $a$ 所获得的平均 reward 。特别地，当分母为0时，可以定义 $Q_t(a)$ 为0.
 
 当分母趋于无穷时，根据大数定理，$Q_t(a)$ 趋于 $q_\ast (a)$ ，该方法称为  sample-average technique
 
-最简单的  action  选取规则就是选择拥有最高  estimated value  的那个  action ，当有多个  actions  拥有最高  estimated value  时，任意选择其中一个即可，即：
- $A_t\doteq \mathop{\arg\min}_aQ_t(a)$
+最简单的  action  选取规则就是选择拥有最高  estimated value  的那个  action ，当有多个  actions  拥有最高  estimated value  时，任意选择其中一个即可，即：  
 
-该方法是完全  exploit ，不进行 explore ，一个简单的改进是引入一个概率值 $\epsilon$，来使选取策略以一定概率进行 explore ，即不再选择拥有最高  estimated value  的  action ，而是随机选取 action ，这称为 ε-greedy methods 。该方法的优势在于，随着 steps  的增加，每个  action  总会有机会被选中，使得 $Q_t(a)$ 整体上趋于 $q_\ast (a)$
+$$A_t\doteq \mathop{\arg\min}_aQ_t(a)$$
+
+该方法是完全  exploit ，不进行 explore ，一个简单的改进是引入一个概率值 $\epsilon$，来使选取策略以一定概率进行 explore ，即不再选择拥有最高  estimated value  的  action ，而是随机选取 action ，这称为 $\epsilon$-greedy methods 。该方法的优势在于，随着 steps  的增加，每个  action  总会有机会被选中，使得 $Q_t(a)$ 整体上趋于 $q_\ast (a)$
 
 #### Exercise：
 *2.1*：
@@ -75,7 +76,7 @@ $Q_t(a)$ 表示选择一次  action  $a$ 所获得的平均 reward 。特别地�
 
 ![10qValue](/assets/images/RL-Introduction/Chapter2/10q*a.png)
 
-对于每一个 $At = a(a = 1, 2,\dots,10)$ 其 reward 都从高斯分布中选取( mean  = $q_\ast (a)$，  variance  = 1)
+对于每一个 $A_t = a(a = 1, 2,\dots,10)$ 其 reward 都从高斯分布中选取( mean  = $q_\ast (a)$，  variance  = 1)
 对于方法的评估：对每一个  10-armed bandit problem  ，在经过 1000 time steps  后，称为一轮  run ，经过独立的2000轮次后(不同 10-armed bandit problem )，得到的结果作为该方法的性能评估
 
 结果如下：
@@ -83,16 +84,16 @@ $Q_t(a)$ 表示选择一次  action  $a$ 所获得的平均 reward 。特别地�
 ![diff-epsilon](/assets/images/RL-Introduction/Chapter2/diff-epsilon.png)
 
 **结论**：
-* 这张图的初始Q值是直接设置为 0 的，如果用$Q_1(a)$ 作初值的话， optimal action 都会很快达到$80\%$ 左右
-*  greedy method 在最开始时会略微地比 ε-greedy method 快一丢丢，但是很快收敛于低水平，其 average reward 约为1，其选中最优 action 的次数大约是三分之一，表示其得到了较次的策略
+* 这张图的初始Q值是直接设置为 0 的，如果用 $Q_1(a)$ 作初值的话， optimal action 都会很快达到 $80\%$ 左右
+*  greedy method 在最开始时会略微地比 $\epsilon$-greedy method 快一丢丢，但是很快收敛于低水平，其 average reward 约为1，其选中最优 action 的次数大约是三分之一，表示其得到了较次的策略
 
-对于 ε-greedy method
-* $ε = 0.1$ 时，其进步较快，收敛也较快，最终 optimal action 选取率收敛于 $90\%$ 左右
-* $ε = 0.01$ 时，进步稍慢，收敛也稍慢，但最终表现会好过 $ε = 0.1$ 的情况，理论上其最终 optimal action 选取率应为 $99\%$，**糟糕的是，图上并没有显示出 $ε = 0.01$ 最终的情况**
-*  ε-greedy method  取决于具体的任务情况，一般来说， reward  的方差大时， ε-greedy method 会更好，如果方差为0,那  ε-greedy method  就是在单纯地做无用功
+对于 $\epsilon$-greedy method
+* $\epsilon = 0.1$ 时，其进步较快，收敛也较快，最终 optimal action 选取率收敛于 $90\%$ 左右
+* $\epsilon = 0.01$ 时，进步稍慢，收敛也稍慢，但最终表现会好过 $\epsilon = 0.1$ 的情况，理论上其最终 optimal action 选取率应为 $99\%$，**糟糕的是，图上并没有显示出 $\epsilon = 0.01$ 最终的情况**
+*  $\epsilon$-greedy method  取决于具体的任务情况，一般来说， reward  的方差大时， $\epsilon$-greedy method 会更好，如果方差为 0 ，那  $\epsilon$-greedy method  就是在单纯地做无用功
 
 #### Exercise：
-*2.3* ： $ε = 0.01$ 的情况会表现最好，假设在足够长的时间后，$ε = 0.1$ 和 $ε = 0.01$ 都找到了最优策略，那么前者会以$90\%$的概率选择 Optimal action ， 而后者会以$99\%$的概率选择 Optimal action ，那么显然后者带来的累计奖励更高。
+*2.3* ： $\epsilon = 0.01$ 的情况会表现最好，假设在足够长的时间后，$\epsilon = 0.1$ 和 $\epsilon = 0.01$ 都找到了最优策略，那么前者会以 $90\%$ 的概率选择 Optimal action ， 而后者会以 $99\%$ 的概率选择 Optimal action ，那么显然后者带来的累计奖励更高。
 
 ### 2.4 Incremental Implementation ###
 action-value methods 总是用 sample-average 来估计 values ，接下来讨论如何有效率地计算  average
@@ -183,12 +184,12 @@ $$
 
 前一个条件用于保证 steps 足够大，以排除任何初始条件或随机扰动的干扰；后一个条件保证了收敛性。
 
-在后面的案例中，第二个条件将得不到满足，这使得$Q_n$不会最终收敛于定值，而是始终受到$R_n$ 的影响，但正如之前所提到的，在非稳定的环境中，这正是我们所需要的。
+在后面的案例中，第二个条件将得不到满足，这使得 $Q_n$ 不会最终收敛于定值，而是始终受到 $R_n$ 的影响，但正如之前所提到的，在非稳定的环境中，这正是我们所需要的。
 
 另外，满足两个条件的 $\alpha_n(a)$ 往往收敛得很慢，或者需要精心调整参数以得到一个令人满意的收敛速度。因此，这两个条件通常只用在理论工作中，在实际应用和研究中很少使用。
 
 #### Exercise： ####
-*2.4*：当 $\alpha$ 不为常数时，$Q_{n+1}$ 与 $R_1$~$R_n$的关系可表示如下：
+*2.4*：当 $\alpha$ 不为常数时，$Q_{n+1}$ 与 $R_1$~$R_n$ 的关系可表示如下：
 
 $$
 \begin{align}
@@ -202,11 +203,11 @@ $$
 
 *2.5：编程题*：设计并实现一个实验，用来观察在非稳定环境下 sample-average methods  的缺点。
 
-使用 10-armed testbed 的变种：所有的初始$q_\ast (a)$ 都相等，并且每一步都分别为每一个 $q_\ast (a)$ 额外加上一个取自高斯分布的变化 ( $mean = 0\  and\ variance = 0.1$ )
+使用 10-armed testbed 的变种：所有的初始 $q_\ast (a)$ 都相等，并且每一步都分别为每一个 $q_\ast (a)$ 额外加上一个取自高斯分布的变化 ( $mean = 0\  and\ variance = 0.1$ )
 
 使用两个方法对比： sample-average  以及 $constant\ \alpha = 0.1$；设 $\epsilon = 0.1$；画出如 *2.2* 的图像
 
-结果如下图，看得出来， sample-average methods  明显劣于*constant $\alpha$*
+结果如下图，看得出来， sample-average methods  明显劣于 *constant $\alpha$*
 
 这是因为 sample-average 在 $n$ 稍大后，其 $Q$ 函数便会很快收敛，而由于环境是 nonstationary ，所以收敛的 $Q$ 函数不适用于新的环境了
 
@@ -224,29 +225,29 @@ $$
 
 缺点是，该参数成了一组需要人为用心挑选的参数，即使只是全设成 $0$ ；而优点则是它能很方便地一些关于所期望的奖励水平的先验知识
 
-初始Q值也可以方便地用于鼓励 explore ，比如把上面的 10-armed bandit problems  的 $Q_1(a)$ 全部设成 $+5$ ，那么在开始的时候，算法总是会得到低于 $5$ 的 reward ，$Q$ 值被更新成较小的值，那么算法就会去尝试其它的 action ，而被选中的 action 的 $Q$ 值总是被减少，也就是说 greedy-action 会不停地变化；反复如此，便能轻松地起到鼓励 explore 的作用；而在$n$稍大一些时， $+5$ 的副作用便轻松的被消去了。
+初始 $Q$ 值也可以方便地用于鼓励 explore ，比如把上面的 10-armed bandit problems  的 $Q_1(a)$ 全部设成 $+5$ ，那么在开始的时候，算法总是会得到低于 $5$ 的 reward ，$Q$ 值被更新成较小的值，那么算法就会去尝试其它的 action ，而被选中的 action 的 $Q$ 值总是被减少，也就是说 greedy-action 会不停地变化；反复如此，便能轻松地起到鼓励 explore 的作用；而在 $n$ 稍大一些时， $+5$ 的副作用便轻松的被消去了。
 
 ![optimistic_initial_value](/assets/images/RL-Introduction/Chapter2/optimistic_initial_value.png)
 
 这种鼓励 explore  的方法称作  optimistic initial values ， 在 stationary problems  可作为提高效率的小技巧
 
-但是，在 nonstationary problems  中并不适用，因为它鼓励 explore  的作用持续很短，只要$n$ 稍大些，初值的效果便会被消去
+但是，在 nonstationary problems  中并不适用，因为它鼓励 explore  的作用持续很短，只要 $n$ 稍大些，初值的效果便会被消去
 事实上，在一般的 nonstationary case 中，任何关于初始条件的方法均很难起到作用，包括 sample-average methods ，它也将初值视作一个特殊值，因为它对所有 rewards 的权重都是相等的。
 
 #### Exercise： ####
 *2.6：Mysterious Spikes*：为什么上图中，$Q_1 = 5$ 这条线的前期会有陡峭的振荡，如何优化？
 
-实验发现，陡峭的峰点位于$step=11$ 处，也就是说，在第11次 action 时，发生了高概率选中 optimal action 的情况；
+实验发现，陡峭的峰点位于 $step=11$ 处，也就是说，在第11次 action 时，发生了高概率选中 optimal action 的情况；
 
-这是因为，在前面10(本例中，$k=10$)次选择中，没被选过的 action 的 $Q$ 值为 $5$ ，而所有被选中的 action 的 $Q$ 值都会被减小；所以前10次选择的结果都是遍历$k$个 action ，因此1-10次选中 optimal action 的概率都是 $10\%$；而到了第11次选择时，因为经过了一遍遍历， optimal action 的估计值会比 non-optimal action 的估计值要以较大的概率(约43%)高出一些，所以会增加中选概率;第12,13,14次选择都有类似的情况。而到了14以后， optimal action 的优势又被随机量给覆盖了(多次选择后， optimal action  突出的情况被抹消)，没有了第一次选择的大优势，曲线逐渐恢复平稳。
+这是因为，在前面10(本例中，$k=10$ )次选择中，没被选过的 action 的 $Q$ 值为 $5$ ，而所有被选中的 action 的 $Q$ 值都会被减小；所以前10次选择的结果都是遍历 $k$ 个 action ，因此1-10次选中 optimal action 的概率都是 $10\%$；而到了第11次选择时，因为经过了一遍遍历， optimal action 的估计值会比 non-optimal action 的估计值要以较大的概率(约 $43\%$ )高出一些，所以会增加中选概率;第12,13,14次选择都有类似的情况。而到了 14 以后， optimal action 的优势又被随机量给覆盖了(多次选择后， optimal action  突出的情况被抹消)，没有了第一次选择的大优势，曲线逐渐恢复平稳。
 
 ### 2.7 Upper-Confidence-Bound Action Selection ###
-之前的  explore  中，  ε-greedy methods  对于  non-greedy action  是随机选的。
+之前的  explore  中，  $\epsilon$-greedy methods  对于  non-greedy action  是随机选的。
 
 upper confidence bound (UCB)  会根据 non-greedy action  的 greedy  程度来选择：
 
 $$
-A_t\doteq \arg\max_a\Big[Q_t(a)+c\sqrt{\frac{\ln t}{N_t(a)}}\Big]
+A_t\doteq ,\mathop{\arg\max}_a\Big[Q_t(a)+c\sqrt{\frac{\ln t}{N_t(a)}}\Big]
 $$
 
 $N_t(a)$ 是  action  $a$ 在 $t$ 时刻前被选过的次数，当其为 $0$ 时视 $a$ 为  greedy-action  ，$c > 0$ 控制  exploration  的强度，$c$ 越大， explore  的力度越大
@@ -261,14 +262,13 @@ $N_t(a)$ 是  action  $a$ 在 $t$ 时刻前被选过的次数，当其为 $0$ �
 
 如上图，其中 $\epsilon = -1$ 的即是  UCB ，前面的抖动是在每轮遍历所有  action  后发生的：第一轮选取时，那些 $N_t(a) = 0$ 的视为  greedy-action  ，因此前 $k$ 次会遍历所有  action ，到了第 $k+1$ 次时，由于所有的 $N_t(a) = 1$，因此会选中 $Q_t(a)$ 最高的那个，于是大概率选中了 optimal action ；第二轮也是类似的情况，在式中不确定值起到较大的作用，到了都遍历两轮后，便是 $Q_t(a)$ 起到较大作用，多次如此后； $N_t(a)$ 变大，不确定度变小，于是曲线趋于平稳。
 
- UCB  虽然在本例中效果好于  ε-greedy  ，但是并不如  ε-greedy  实用，原因在于其更难扩展到其它普遍的RL 问题中(至少在本书后面的例子中是这样的);
+ UCB  虽然在本例中效果好于  $\epsilon$-greedy  ，但是并不如  $\epsilon$-greedy  实用，原因在于其更难扩展到其它普遍的RL 问题中(至少在本书后面的例子中是这样的)  
 一是不好处理  nonstationary problems ，二是不好处理较大的状态空间，尤其是在用函数逼近的情况下；在这些情况中  UCB  并不实用
 
 ### 2.8 Gradient Bandit Algorithms ###
 之前的方法都是估计一个  action values ，然后用它来选 actions ，本节会用一个 numerical preference --- $H_t(a)$  来选action：
 
-$H_t(a)$ 越大，$a$ 被选中的概率越大，但是无法给出 $H_t(a)$ 与  reward  的关系表达
-
+$H_t(a)$ 越大，$a$ 被选中的概率越大，但是无法给出 $H_t(a)$ 与  reward  的关系表达  
 $H_t(a)$ 的值中，只有不同的 $a$ 之间的差值是有意义的，因此，使用  soft-max distribution  来选择 $a$
 
 $$
@@ -369,7 +369,7 @@ $$
 ### 2.9 Associative Search (Contextual Bandits) ###
 之前讨论的是  nonassociative tasks ，也即不需要建立状态与动作之间的联系，接下来将讨论  associative task ，需要建立从状态到最优动作之间的映射关系。
 
-举个例子：一个新的老虎机问题：现在我们需要在10个老虎机问题中进行决策，这10组老虎机的 $q_\ast (a)$ 各不相同，每次随机选择一组老虎机进行选择，如果不知道或者不使用老虎机组合的编号，那么上面的方法将起不到任何作用。只有将老虎机组合的编号用上，为每组老虎机考虑不同的  action  ，才能得到理想的奖励。这就是为老虎机组合的状态(编号)与对应的动作之间建立起映射关系。
+举个例子：一个新的老虎机问题：现在我们需要在 10 个老虎机问题中进行决策，这10组老虎机的 $q_\ast (a)$ 各不相同，每次随机选择一组老虎机进行选择，如果不知道或者不使用老虎机组合的编号，那么上面的方法将起不到任何作用。只有将老虎机组合的编号用上，为每组老虎机考虑不同的  action  ，才能得到理想的奖励。这就是为老虎机组合的状态(编号)与对应的动作之间建立起映射关系。
 
 Associative search taks  常被叫做  contextual bandits  ，其介于简单的  k-armed banditproblem  和完全的RL问题之间，它虽然建立了状态与动作的联系，但是动作还是只影响到立即奖励，而不影响后续状态。
 
