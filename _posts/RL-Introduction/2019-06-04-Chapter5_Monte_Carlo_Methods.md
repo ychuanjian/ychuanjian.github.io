@@ -16,7 +16,7 @@ mathjax: true
 为了得到具体的回报，将蒙特卡洛法只用在 episodic tasks 中，即无论如何选择 action，任务总会在某些点结束  
 只有在一个周期结束后，值函数和策略才会改变，蒙特卡洛法是 episode-by-episode 提升的，而非 step-by-step(online)  
 蒙特卡洛广义上是指，涉及到重要的随机分量操作的估计方法  
-在这里，用它来特指使用完整回报的均值的方法  
+在这里，用它来特指使用 完整回报的均值 的方法  
 
 蒙特卡洛法 对每个 state-action 对 的回报进行采样平均，类似于在第2章中，对每个 action 的 reward 进行采样平均  
 主要区别在于，这里有多个状态，每个动作都相当于多个 bandit problem，并且这些不同的 bandit problem 是有内在关联的  
@@ -35,9 +35,9 @@ mathjax: true
 当得到的回报样本足够多，均值便会趋于回报了  
 所有蒙特卡洛方法的背后都是这个简单的思想  
 
-假设：对一个策略 $\pi$ 估计其在状态 $s$ 下的值函数 $v_\pi(s)$ ，并给出一系列周期的集合  
+假设：对一个策略 $\pi$ 估计其在状态 $s$ 下的值函数 $v_\pi(s)$ ，并给出一系列 episodes 的集合  
 在一个周期中，每次 $s$ 出现都称作一次 *visit to s* ，在一个周期中，同一个状态可能有多个 visit，其中第一次则叫做 *first-visit to s*  
-*First-visit MC method*: 只用每个周期中的第一次 visit to s 来作为样本，平均后估计值  
+*First-visit MC method*: 只用每个周期中的第一次 visit to s 来作为样本，均值化之后估计其值  
 *Every-visit MC method*: 一个周期中的每一次 visit to s 都作为样本  
 其中 first-visit MC method 用得更广，也是本章的重点  
 而 every-visit MC method 在 函数逼近中的扩展较多  
@@ -45,7 +45,7 @@ mathjax: true
 
 ![first_visit_MC_prediction](/assets/images/RL-Introduction/Chapter5/first_visit_MC_prediction.png)
 
-两种 MC 方法均会随 visits 次数 逐渐趋向值函数  
+两种 MC 方法均会随 visits 次数 使估计逐渐逼近值函数  
 该例中，每个 回报 都是关于 拥有有限方差的 $v_\pi(s)$ 的独立同分布的估计量  
 根据大数定理，序列的均值会收敛于它们的期望值  
 每个均值本身都是一个 标准差落在 $1/\sqrt{n}$ 内的无偏估计量，n 是回报的数量  
@@ -91,7 +91,7 @@ MC 中，每个状态的估计值是相互独立的
 另有一点就是这里用的是 动作值 而非 状态值，因为没有环境动态  
 
 这里做了两个假设，一是使用了探索起点，另一个是无限个 episode  
-想要得到一个能够实用的算法，必须解除两个假设；本节接下来会解除第二个假设，第一个假设在后面解决  
+想要得到一个能够实用的算法，必须解除两个假设；本节接下来会解除后者，前者在后面解决  
 
 其实在 DP 中就已经遇到过这个问题，当 策略或值函数 只在无穷远处才会收敛时，有两个办法来解决：  
 * 一是置信度的方法，首先测量或假设估计中误差的大小和概率的界限，然后通过足够多的实验来保证这个界限是足够小的  
@@ -102,11 +102,11 @@ MC 中，每个状态的估计值是相互独立的
 
 ![Monte_Carlo_ES](/assets/images/RL-Introduction/Chapter5/Monte_Carlo_ES.png)
 
- ### 5.4 Monte Carlo Control without Exploring Starts ###
-解除探索起点的假设，主要思想是保证 agent 能够持续不断地选择到所有的动作  
+### 5.4 Monte Carlo Control without Exploring Starts ###
+解除探索起点的假设，主要思想是保证 agent 能够持续不断地选中任意的动作  
 有两种办法来保证这一点：  
-*on-policy*：估计、改进用于做决策的policy  
-*off-policy*：估计、改进用于生成数据的policy  
+*on-policy*：估计、改进用于做决策的 policy  
+*off-policy*：估计、改进的 policy 不同于生成数据的那个 policy  
 上一节的算法用的是 on-policy  
 这一节将设计一种不需要探索起点假设的 on-policy 算法  
 下一节来讨论 off-policy  
@@ -119,8 +119,8 @@ on-policy 中，policy 是软的 (soft)
 显然，任意的 $\epsilon$-greedy 策略至少会等于 $\epsilon$-soft 策略，更大的可能是优于
 
 在不用探索起点的情况下，无法简单地用贪婪策略来改进旧策略，因为这会阻止对那些 nongreedy actions 的探索  
-幸运的是，GPI 并不要求策略是一个完全的贪婪策略，只要它在向贪婪策略移动即可  
-在以下算法中，我们将它往一个 $\epsilon$-greedy 策略移动  
+幸运的是，GPI 并不要求策略是一个完全的贪婪策略，只要它在向贪婪策略靠近即可  
+在以下算法中，我们将它往一个 $\epsilon$-greedy 策略靠近  
 对于任意的 $\epsilon$-soft policy $\pi$, 关于 $q_\pi$ 的任意 $\epsilon$-greedy policy 都能保证优于或等于 $\pi$   
 
 ![on_policy_first_visit_MC_control_for_epsilon_soft_policies](/assets/images/RL-Introduction/Chapter5/on_policy_first_visit_MC_control_for_epsilon_soft_policies.png)
@@ -129,7 +129,7 @@ on-policy 中，policy 是软的 (soft)
 考虑一个新的环境，新环境与之前有相同的动作和状态集，并按如下所述行动  
 如果在 s 选择动作 a，那么新环境有 $1-\epsilon$ 的可能与旧环境采取相同的行为，有 $\epsilon$ 的可能等概率选择其它的动作，然后按照旧环境继续行动  
 在这个新环境下，最好的选择就是采用与旧环境相同的 $\epsilon$-soft 策略  
-设 $\tilde{v}_\ast$ 和 $\tilde{q}_\ast$ 表示新环境中的最优值函数  
+设 $\tilde v_\ast$ 和 $\tilde q_\ast$ 表示新环境中的最优值函数  
 那么对于一个策略 $\pi$ ,当且仅当 $v_\pi=\tilde{v}_\ast$ 时为最优 $\epsilon$-soft 策略  
 
 以上说明了 $\epsilon$-soft 策略的 policy iteration 算法  
