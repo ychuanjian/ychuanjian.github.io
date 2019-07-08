@@ -96,7 +96,7 @@ TD 和 MC 都能逐渐收敛到准确的 prediction ，但是它们谁收敛得�
 因为不使用折扣，所以每个状态的真实值是：从该状态开始，终结于最右节点的概率。  
 于是，每个状态的真实值如下：从 A 到 E 分别是 $\frac{1}{6},\frac{2}{6},\frac{3}{6},\frac{4}{6},\frac{5}{6}.$  
 
-![example_6_2_](/assets/images/RL-Introduction/Chapter6/figure_6_2_.png)
+![example_6_2_](/assets/images/RL-Introduction/Chapter6/example_6_2_.png)
 
 上图左边显示了使用 $TD(0)$ 单次运行不同个数的 episodes 所学得的 values；在 100 个 episodes 后 估计值已经十分接近于真实值了，而根据最后 episodes 的结果，估计值会存在一定的波动。  
 右图则是不同 $\alpha$ 下两种方法的学习曲线；性能衡量指标是均方根误差(root mean-squared error---RMS)，五种状态经过 100 轮实验后取均值。  

@@ -74,7 +74,7 @@ $$A_t\doteq \mathop{\arg\min}_aQ_t(a)$$
 
 10-armed testbed ：2000次随机生成的 10-armed bandit problem ，每一次都以标准高斯分布选取10个 $q_\ast (a)$，如下图：
 
-![10qValue](/assets/images/RL-Introduction/Chapter2/10q*a.png)
+![10qValue](/assets/images/RL-Introduction/Chapter2/10q_a.png)
 
 对于每一个 $A_t = a(a = 1, 2,\dots,10)$ 其 reward 都从高斯分布中选取( mean  = $q_\ast (a)$，  variance  = 1)
 对于方法的评估：对每一个  10-armed bandit problem  ，在经过 1000 time steps  后，称为一轮  run ，经过独立的2000轮次后(不同 10-armed bandit problem )，得到的结果作为该方法的性能评估

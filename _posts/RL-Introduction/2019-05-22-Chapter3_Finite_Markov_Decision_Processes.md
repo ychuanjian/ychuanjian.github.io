@@ -32,7 +32,7 @@ $$
 
 ![agent-environment_interaction](/assets/images/RL-Introduction/Chapter3/agent-environment_interaction.png)
 
-在一个 *finite* MDP 中，states，actions 和 rewards 取值的集合($\mathcal S, \mathcal A, and\ \mathcal R$)中的元素个数都是有限的。  
+在一个 *finite* MDPs 中，states，actions 和 rewards 取值的集合($\mathcal S, \mathcal A, and\ \mathcal R$)中的元素个数都是有限的。  
 在这种情况下，随机变量 $R_t$ 和 $S_t$ 有明确定义的离散概率分布，且仅依赖于前一个 state 和 action.  
 即对于这些随机变量，出现在时间 $t$ 的具体值，$s'\in \mathcal S$ 和 $r \in \mathcal R$ ，有一个概率：  
 
@@ -346,29 +346,29 @@ $$\begin{align}
 value functions 对 policies 定义部分排序  
 如果一个策略 $\pi$ 在所有的状态 states 下，其期望回报 return 均大于或等于另一个策略 $\pi'$ ，那么就称 $\pi$ 优于 $\pi'$   
 用数学语言表达就是： $\pi \geq \pi'\ if\ and\ only\ if\ \mathcal v_\pi(s)\geq\mathcal v_{\pi'}(s)\ for\ all\ s\in \mathcal S$   
-总是至少会有一个策略会优于或等于所有其它的策略，称之为**最优策略**(*optimal policy*)，将它或它们同意定义为 $\pi_\ast$ ，它们共享相同的 state-value function ，称为**最优 状态-值 函数**(*optimal state-value function*)，写作 $\mathcal v_\ast$ ; 同理有**最优 状态-动作-值 函数** $\mathcal q_\ast(s,a)$ ，它们的定义如下：
+总是会有至少一个策略会优于或等于所有其它的策略，称之为**最优策略**(*optimal policy*)，将它或它们统一定义为 $\pi_\ast$ ，它们共享相同的 state-value function ，称为**最优 状态-值 函数**(*optimal state-value function*)，写作 $\mathcal v_\ast$ ; 同理有**最优 状态-动作-值 函数** $\mathcal q_\ast(s,a)$ ，它们的定义如下：
 
 $$\begin{align}
-\mathcal v_\ast(s)&\doteq\max_\pi\mathcal v_\pi(s), \\
-\mathcal q_\ast(s,a)&\doteq \max_\pi\mathcal q_\pi(s,a), \\
-&=\mathbb E\Big[R_{t+1}+\gamma\mathcal v_\ast(S_{t+1})\ \big|\ S_t=s,A_t=a\Big].
+\mathcal v_\ast(s)& \doteq\max_\pi\mathcal v_\pi(s), \\
+\mathcal q_\ast(s,a)& \doteq \max_\pi\mathcal q_\pi(s,a), \\
+& =\mathbb E\Big[R_{t+1}+\gamma\mathcal v_\ast(S_{t+1})\ \big|\ S_t=s,A_t=a\Big].
 \end{align}$$
 
 **贝尔曼最优方程**(*Bellman optimality equation*)表现出：在最优策略下，一个状态的 value 必须等于该状态的最优 action 的期望回报：
 
 $$\begin{align}
-\mathcal v_\ast(s)&=\max_{a\in \mathcal A(s)}\mathcal q_{\pi_\ast}(s,a) \\
-&=\max_a\mathbb E_{\pi_\ast}\Big[G_t\mid S_t=s,A_t=a\Big] \\
-&=\max_a\mathbb E_{\pi_\ast}\Big[R_{t+1}+\gamma G_{t+1}\mid S_t=s,A_t=a\Big] \\
-&=\max_a\mathbb E\Big[R_{t+1}+\gamma \mathcal v_\ast(S_{t+1})\mid S_t=s,A_t=a\Big] \\
-&=\max_a\sum_{s',r}p(s',r\mid s,a)\Big[r+\gamma \mathcal v_\ast(s')\Big]
+\mathcal v_\ast(s)& =\max_{a\in \mathcal A(s)}\mathcal q_{\pi_\ast}(s,a) \\
+& =\max_a\mathbb E_{\pi_\ast}\Big[G_t\mid S_t=s,A_t=a\Big] \\
+& =\max_a\mathbb E_{\pi_\ast}\Big[R_{t+1}+\gamma G_{t+1}\mid S_t=s,A_t=a\Big] \\
+& =\max_a\mathbb E\Big[R_{t+1}+\gamma \mathcal v_\ast(S_{t+1})\mid S_t=s,A_t=a\Big] \\
+& =\max_a\sum_{s',r}p(s',r\mid s,a)\Big[r+\gamma \mathcal v_\ast(s')\Big]
 \end{align}$$
 
 状态-动作 值函数的贝尔曼最优方程：  
 
 $$\begin{align}
-\mathcal q_\ast(s,a)&= \mathbb E_{\pi_\ast}\Big[R_{t+1}+\gamma \max_a'q_\ast(S_{t+1},a')\mid S_t=s,A_t=a\Big] \\
-&=\sum_{s',r}p(s',r\mid s,a)\Big[r+\gamma \max_{a'}q_\ast(s',a')\Big]
+\mathcal q_\ast(s,a)& = \mathbb E_{\pi_\ast}\Big[R_{t+1}+\gamma \max_a'q_\ast(S_{t+1},a')\mid S_t=s,A_t=a\Big] \\
+& =\sum_{s',r}p(s',r\mid s,a)\Big[r+\gamma \max_{a'}q_\ast(s',a')\Big]
 \end{align}$$
 
 对于有限马尔科夫决策过程，$\mathcal v_\ast(s)$ 的贝尔曼方程有独立于策略的唯一解  
