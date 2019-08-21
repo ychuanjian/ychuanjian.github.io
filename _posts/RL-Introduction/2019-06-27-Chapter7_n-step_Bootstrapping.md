@@ -27,7 +27,7 @@ $$V_{t+n}(S_t)\doteq V_{t+n-1}(S_t)+\alpha \big[G_{t:t+n}-V_{t+n-1}(S_t)\big] \t
 ![figure_7_1_](/assets/images/RL-Introduction/Chapter7/figure_7_1_.png)
 
 使用值函数 $V_{t+n-1}$ 来校正 $R_{t+n}$ 之后的奖励值。  
-可以保证的是，在最坏情形下，它们的期望值会比 $V_{t+n-1} 更贴近于 $v_\pi$.  
+可以保证的是，在最坏情形下，它们的期望值会比 $V_{t+n-1}$ 更贴近于 $v_\pi$.  
 
 $$\max_s \big|\mathbb E_\pi[G_{t:t+n}|S_t=s]-v_\pi(s)\big|\leq \gamma^n \max_s \big|V_{t+n-1}(s)-v_\pi(s)\big|  \tag{7.3} $$
 

@@ -186,7 +186,7 @@ $$\mathbb E[\rho_{t:T-1}G_t\mid S_t]=v_\pi(S_t)$$
 另外，可以定义 $\mathcal J(s)$ 为 访问过状态 s 的所有 time steps 的集合，用于 every-visit 方法  
 而对于 first-visit 方法，$\mathcal J(s)$ 仅包含每个 episode 中第一次访问 s 的 time step  
 令 $T(t)$ 表示在 t 之后第一个终结状态的 time step，$G_t$ 表示从 t 到 $T(t)$ 的回报  
-那么 $\{G_t\}_{t\in \mathcal J(s)}$ 为属于状态 s 的回报，$\{\rho_{t:T(t)-1}\}_{t\in \mathcal J(s)}$ 表示对应的重要性采样率  
+那么 ${\lbrace G_t\rbrace }_{t\in \mathcal J(s)}$ 为属于状态 s 的回报，$\lbrace \rho_{t:T(t)-1}\rbrace_{t\in \mathcal J(s)}$ 表示对应的重要性采样率  
 为了估计 $v_\pi(s)$ ，简单地把重要性采样率乘上回报，平均后得到结果：  
 
 $$
