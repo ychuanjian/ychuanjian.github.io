@@ -1,7 +1,7 @@
 ---
 layout: post
 title: CHAPTER 8. Planning and Learning with Tabular Methods
-date: 2019-08-12
+date: 2019-08-30
 tags: 强化学习
 mathjax: true
 ---
@@ -101,7 +101,7 @@ planning and learning 的核心都是对值函数的估计。
 比如设置每个动作的奖励值为 $r+\kappa \sqrt \tau$ .  
  $r$ 为已经获得过的实际奖励值， $\tau$ 为该动作上次执行距今的步数，$\kappa$ 为鼓励系数。  
  
- ### Prioritized Sweeping ###
+ ### 8.4 Prioritized Sweeping ###
  planning 中随机采样是没有效率的，比如例图 8.2 中的第二个 episode，在所有的状态-动作对中，仅有 terminal state 之前的状态的值是非零，其它状态值均为零，对它们进行采样并模拟，得到的结果只能是从 0 变成 0，这大量的更新都在做无用功。  
  状态空间越大的问题，这些无用功越多。  
  关于这一点需要做的是让算法的每次更新都能带来值的变化。  
