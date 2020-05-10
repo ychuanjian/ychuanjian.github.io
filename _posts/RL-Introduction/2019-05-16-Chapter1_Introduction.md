@@ -13,27 +13,31 @@ learner需要通过不断的尝试来发现哪个action能够产生较大的rewa
 RL的两个显著特征：*trial-and-error*(摸石头过河)、*delayed reward* (延后的反馈)  
 Reinforcement Learning 既能表示强化学习的问题，也能表示解决它的方法，还能表示研究这类问题及其解决办法的领域  
 需要注重区分这类表达方式，避免造成混淆，尤其要分清：强化学习问题和解决方法的区别  
-可以用动态系统-dynamic system 理论 (数学概念) 中的观点来描述强化学习   
-具体来说就是：the optimal control of incompletely-known Markov decision processes.	(Chapter 3)
+可以用动态系统-dynamic system 理论 (数学概念) 中的观点来描述强化学习  
+具体来说就是：the optimal control of incompletely-known Markov decision processes.  (Chapter 3)
 
 **一个学习代理必须具备三个条件：**
+
 * 能够感知周围环境的状态 state
 * 能够做出影响 state 的行为 action
 * 一个与 state 相关的目标 goal
 
 Markov decision processes 包含了这三个方面：sensation、action、goal
 
-**RL与其它机器学习方法**
+### RL与其它机器学习方法
 
 **监督学习：**  
+
 * 由具备知识的外部监督者 supervisor 提供标记过的数据集，用于学习
 * 目标：在训练集以外的数据上，能够做出准确的判断
 * 监督学习不适用于交互
 
 **非监督学习：**  
+
 * 寻找未标记数据中的隐含结构信息
 
-**强化学习**  
+**强化学习：**  
+
 * 获得最大的奖励 reward
 
 **RL的挑战：**  
@@ -48,6 +52,7 @@ RL的代理并不是单纯指向机器人一类的完整结构，也可以指向
 人们必须超越显而易见的代理人及其环境的例子来理解强化学习框架的普遍性  
 
 **RL的四个要素**：策略 *a policy* 、奖励信号 *a reward signal* 、价值函数 *a value function* 、环境模型 *a model of the environment*  
+
 * policy：定义了在什么场景 state 下应当做出什么行为 action ，有时会是一个搜索的过程。一般而言，策略可能是随机的
 * reward signal：定义了RL的学习目标，决定了行为的好坏，是策略更新的基础。一般而言，reward signal 是 state 和 action 的随机函数
 * value function：RL的长期目标，在某一个 state +action 下，其产生的 reward 可能是低的，但其后续造成的影响能带来更高的 value ，这是RL所需要的  
@@ -66,6 +71,7 @@ RL强烈依赖于 state ，state 可以理解为代理能从所在环境能得�
 我们的重点是强化学习方法，这些方法在与环境相互作用时学习，而进化方法则不然  
 能够利用个体交互行为细节的方法在许多场合会比进化算法更有效。  
 进化算法忽略了许多RL问题的有用的结构：  
+
 * 忽略了所搜索的策略是一个从 states 到 actions 的函数
 * 忽略了个体在其生命周期中传递的具体 states 或 选择的具体 actions
 
@@ -96,7 +102,8 @@ $$V(s)\leftarrow V(s)+\alpha[ V(s')-V(s)]$$
 使用value function ：则会在对局中，根据每一步造成的胜率变化来判断对应策略，比进化算法更加细化  
 两者都是在策略空间中进行搜索，但学习value function 在信息利用上更有优势
 
-#### Exercise：
+#### Exercise
+
 *1.1：self-play*：最后会变成进化算法，因为两者都会根据对方的下法调整自己的策略，也就是对手固定的假设不存在，那么value function最终会寻找一个不针对任何对手的策略
 
 *1.2：Symmetries*：可以用对称矩阵，加快学习速度，并不会改变其学习结果。如果对手不利用对称性，那么其在对称布局上的下法有可能不同，策略就不应该利用对称性来改变下法，还是应该对战中学到的策略来做应对，那么对称的state 就不会拥有对称的value，因为对手的下法是不同的。
@@ -104,4 +111,5 @@ $$V(s)\leftarrow V(s)+\alpha[ V(s')-V(s)]$$
 *1.3：Greedy Play*：如果总是Greedy Play，那么策略就不会学到新知识，就可能错过其它胜率更高的下法，就不会变得更好，也不会变得更差，当然，一旦对手开始变化，那么策略就有可能变差
 
 *1.4：Learning from Exploration*：
+
 * With the step size parameter appropriately reduced, and assuming the exploration rate is fixed, the probability set with no learning from exploration is the value of each state given the optimal action from then on is taken, whereas with learning from exploration it is the expected value of each state including the active exploration policy. Using the former is better to learn, as it reduces variance from sub-optimal future states (e.g. if you can win a game of chess in one move, but if you perform another move your opponent wins, that doesn't make it a bad state) The former would result in more wins all other things being equal.
